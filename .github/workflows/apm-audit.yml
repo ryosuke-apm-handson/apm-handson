@@ -1,0 +1,44 @@
+name: APM Policy Compliance
+
+on:
+    pull_request:
+        paths:
+            - "apm.yml"
+            - "apm.lock.yaml"
+            - ".github/**"
+    push:
+        branches: [main]
+        paths:
+            - "apm.yml"
+            - "apm.lock.yaml"
+            - ".github/**"
+
+permissions:
+    contents: read
+    security-events: write # upload-sarif に必要
+    actions: read # upload-sarif が workflow run 情報を取得するのに必要
+
+jobs:
+    apm-audit:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Install APM CLI
+              run: curl -fsSL https://raw.githubusercontent.com/microsoft/apm/main/install.sh | bash
+
+            - name: Baseline checks (lockfile + hidden Unicode)
+              run: apm audit --ci
+
+            - name: Policy checks (<your-org>/.github/apm-policy.yml)
+              if: always() # Baseline が落ちても SARIF は必ず生成する
+              run: apm audit --ci --policy org --no-cache -f sarif -o policy-report.sarif
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Upload SARIF to Code Scanning
+              if: always()
+              uses: github/codeql-action/upload-sarif@v3
+              with:
+                  sarif_file: policy-report.sarif
+                  category: apm-policy

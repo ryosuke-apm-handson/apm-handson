@@ -1,0 +1,18 @@
+lockfile_version: '1'
+generated_at: '2026-04-25T11:18:21.506776+00:00'
+apm_version: 0.9.1
+dependencies:
+- repo_url: github/awesome-copilot
+  host: github.com
+  resolved_commit: 63d08d51f792d53feec8c1c06897cee870e83c18
+  virtual_path: plugins/context-engineering
+  is_virtual: true
+  package_type: apm_package
+  deployed_files:
+  - .github/agents/context-architect.agent.md
+  - .github/skills/context-map
+  - .github/skills/refactor-plan
+  - .github/skills/what-context-needed
+  deployed_file_hashes:
+    .github/agents/context-architect.agent.md: sha256:6da7a854a670d2810fc61b173eea2500a2af644d8292f58e3d440ac2d120ee0d
+  content_hash: sha256:8aa73614daa1064310331cab62f0a6bb1037d8b9bc8f2d11bd1a9dba482e4103
